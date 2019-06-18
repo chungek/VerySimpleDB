@@ -1,0 +1,1 @@
+javac -d ./dbPA3/bin/ -cp ./dbPA3/src ./dbPA3/src/execution/DB.java
