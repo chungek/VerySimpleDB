@@ -14,9 +14,6 @@ import utilities.Catalog;
 
 public class TestPerm {
 	
-//	String[] relationsNeeded;		//[A, C, F, J, G, H, D]
-//	String[] joinPreds;				//[A.c2 = C.c0, A.c5 = F.c0, A.c9 = J.c0, A.c6 = G.c0, A.c7 = H.c0, A.c3 = D.c0]
-	
 	public static String[] readPreds(String[] joinPreds) {
 		String[] preds = new String[joinPreds.length];
 		for (int i = 0; i < joinPreds.length; i++) {
@@ -47,12 +44,12 @@ public class TestPerm {
 		String best = "";
 		int numRels = relsNeeded.length;
 		String[] preds = readPreds(jPreds);
-		//make reference for num of rows in each table
+		// make reference for num of rows in each table
 		HashMap<String, Integer> relRows = new HashMap<String, Integer>();
 		for (String rel : relsNeeded) {
 			relRows.put(rel, (Integer) catalogs.get(rel).getNumRows());
 		}
-		//sort the relations by num rows
+		// sort the relations by num rows
 		ArrayList<String> sortedTables = new ArrayList<String>();
 		sort(sortedTables, numRels, relsNeeded, relRows);
 		ArrayList<String> tempPreds = new ArrayList<String>(Arrays.asList(preds));
@@ -60,10 +57,10 @@ public class TestPerm {
 		best = findEntryJoin(tempPreds, relRows, sortedTables);
 		while (sortedTables.size() > 0) {
 			String toRemove = "";
-			//try to find next join from sorted tables
+			// try to find next join from sorted tables
 			for (String table : sortedTables) {
 				boolean foundPred = false;
-				//loop thru all preds to see if this option is valid
+				// loop thru all preds to see if this option is valid
 				for (String pred : preds) {
 					if (pred.charAt(0) == table.charAt(0)) {
 						if (best.indexOf(pred.charAt(1)) >= 0) {
@@ -87,20 +84,20 @@ public class TestPerm {
 		}
 		return best;
 	}
-	//find the join with the largest entry join with largest left child
+	// find the join with the largest entry join with largest left child
 	public static String findEntryJoin(ArrayList<String> tempPreds, HashMap<String, Integer> relRows, ArrayList<String> sortedTables) {
 		int max = Integer.MIN_VALUE;
 		int babymax = Integer.MIN_VALUE;
 		String currLeftMax = "";
 		String currRightMax = "";
 		for (String pred : tempPreds) {
-			//case where left side of pred has more rows and left side has more than 2nd max
+			// case where left side of pred has more rows and left side has more than 2nd max
 			if (relRows.get(pred.charAt(0)+"") >= max && relRows.get(pred.charAt(1)+"") > babymax) {
 				currLeftMax = pred.charAt(0)+"";
 				currRightMax = pred.charAt(1)+"";
 				max = relRows.get(pred.charAt(0)+"");
 				babymax = relRows.get(pred.charAt(1)+"");
-			//case where right side of pred has more rows and left side has more than 2nd max
+			// case where right side of pred has more rows and left side has more than 2nd max
 			} else if (relRows.get(pred.charAt(1)+"") >= max && relRows.get(pred.charAt(0)+"") > babymax) {
 				currLeftMax = pred.charAt(1)+"";
 				currRightMax = pred.charAt(0)+"";
@@ -116,14 +113,14 @@ public class TestPerm {
 	public static void main(String[] args) {
 		Scanner console = new Scanner(System.in);
 		String[] csvPaths = console.nextLine().split(",");
-		//map to hold all catalogs
+		// map to hold all catalogs
 		ConcurrentHashMap<String, Catalog> catalogs = new ConcurrentHashMap<String, Catalog>();
-		//compress all csv files concurrently and build map of catalogs
+		// compress all csv files concurrently and build map of catalogs
 		for (String file : csvPaths) {
 			Thread t = new Thread(new ConcurrentLoader(file, catalogs));
 			t.start();
 		}
-		//wait for loads to complete
+		// wait for loads to complete
 		while (catalogs.size() != csvPaths.length);
 		long start = System.currentTimeMillis();
 		String[] rels = {"A", "I", "F", "K", "C", "B", "G"};

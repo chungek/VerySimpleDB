@@ -24,10 +24,9 @@ public class ConcurrentFilter extends ConcurrentOperator implements Runnable {
 		this.source 	= source;
 		tupleInfo  		= source.getTupleInfo();
 		this.preds		= buildFilterPreds(preds);
-		inQ 					= source.getOutQ();
-		outQ 					= new LinkedBlockingQueue<Tuple>(SIZE);
-		src 					= (ConcurrentColScan) source;
-//		System.out.println(tupleInfo.actualIndices.toString());
+		inQ 			= source.getOutQ();
+		outQ 			= new LinkedBlockingQueue<Tuple>(SIZE);
+		src 			= (ConcurrentColScan) source;
 	}
 
 	@Override
@@ -38,7 +37,6 @@ public class ConcurrentFilter extends ConcurrentOperator implements Runnable {
 			try {
 				t = inQ.take();
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			if (t != null) {
@@ -47,7 +45,6 @@ public class ConcurrentFilter extends ConcurrentOperator implements Runnable {
 						outQ.put(new Tuple("poisonPill"));
 						break;
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				} else if (t.checkSmallPoisonPill()) {
@@ -55,7 +52,6 @@ public class ConcurrentFilter extends ConcurrentOperator implements Runnable {
 						outQ.put(new Tuple("smallPill"));
 						break;
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				} else {
@@ -69,10 +65,8 @@ public class ConcurrentFilter extends ConcurrentOperator implements Runnable {
 					if (passed) {
 						try {
 							count++;
-//							System.out.println(count + tupleInfo.getNamesOfChildren().toString() + t.toString());
 							outQ.put(t);
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -81,53 +75,6 @@ public class ConcurrentFilter extends ConcurrentOperator implements Runnable {
 		}
 		close();
 	}
-
-//	@Override
-//	public void run() {
-//		while (!exit) {
-//			Tuple input = inQ.poll();
-//			if (input != null) {
-//				if (input.checkBigPoisonPill()) {
-//					try {
-//						outQ.put(new Tuple("poisonPill"));
-//						inQ.drainTo(new ArrayList<Tuple>());
-//						source.close();
-//						break;
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					break;
-//				} else if (input.checkSmallPoisonPill()) {
-//					try {
-//						outQ.put(new Tuple("smallPill"));
-//						inQ.drainTo(new ArrayList<>());
-//						source.close();
-//						break;
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				} else {
-//					boolean passed = true;
-//					for (FilterPredicate p : preds) {
-//						if (!p.test(input)) {
-//							passed = false;
-//							break;
-//						}
-//					}
-//					if (passed) {
-//						try {
-//							outQ.put(input);
-//						} catch (InterruptedException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
 
 	private FilterPredicate[] buildFilterPreds(String[] filterPreds) {
 		FilterPredicate[] preds = new FilterPredicate[filterPreds.length];
@@ -143,9 +90,6 @@ public class ConcurrentFilter extends ConcurrentOperator implements Runnable {
 
 	@Override
 	public void close() {
-//		inQ.drainTo(new ArrayList<Tuple>());
-//		source.close();
-//		exit = true;
 		inQ = null;
 		preds = null;
 		src = null;

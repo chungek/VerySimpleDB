@@ -28,28 +28,20 @@ public class ConcurrentJoin extends ConcurrentOperator implements Runnable {
 	int passedcount;
 
 	public ConcurrentJoin(ConcurrentOperator c1, ConcurrentOperator c2, JoinPredicate[] preds) {
-		this.c1 			= c1;
-		this.c2 			= c2;
+		this.c1 		= c1;
+		this.c2 		= c2;
 		this.source1 	= c1.getOutQ();
 		this.source2 	= c2.getOutQ();
 		this.preds 		= preds;
 		tupleInfo  		= new TupleInfo(c1.getTupleInfo(), c2.getTupleInfo());
-		outQ 					= new LinkedBlockingQueue<Tuple>(SIZE);
-		exit 					= false;
+		outQ 			= new LinkedBlockingQueue<Tuple>(SIZE);
+		exit 			= false;
 		tupleMapOfC2	= new HashMap<Integer, LinkedList<Tuple>>();
 		buildDone 		= false;
-		done 					= false;
-		c1HashKey			= preds[0].index1;
-		c2HashKey			= preds[0].index2;
+		done 			= false;
+		c1HashKey		= preds[0].index1;
+		c2HashKey		= preds[0].index2;
 		passedcount		= 0;
-//		for (JoinPredicate jp : preds) {
-//			System.out.println(jp.toString() + tupleInfo.namesOfChildren.toString());
-//		}
-//		System.out.println("t1 : " +c1.getTupleInfo().actualIndices.toString() +" " + c1.getTupleInfo().getNamesOfChildren().toString());
-//		System.out.println("t2 : " + c2.getTupleInfo().actualIndices.toString() + " " + c2.getTupleInfo().getNamesOfChildren().toString());
-//		for (JoinPredicate jp : preds) {
-//			System.out.println(jp.toString());
-//		}
 	}
 
 	@Override
@@ -60,7 +52,6 @@ public class ConcurrentJoin extends ConcurrentOperator implements Runnable {
 			try {
 				t1 = source1.take();
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			if (t1 != null ) {
@@ -69,7 +60,6 @@ public class ConcurrentJoin extends ConcurrentOperator implements Runnable {
 						outQ.put(new Tuple("poisonPill"));
 						break;
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				} else {
@@ -83,7 +73,7 @@ public class ConcurrentJoin extends ConcurrentOperator implements Runnable {
 	public void join(Tuple t1) {
 		if (tupleMapOfC2.containsKey(t1.getValue(c1HashKey))) {
 			LinkedList<Tuple> matches = tupleMapOfC2.get(t1.getValue(c1HashKey));
-			//multiple join preds to check
+			// multiple join preds to check
 			if (preds.length > 1) {
 				Iterator<Tuple> checkItr = matches.iterator();
 				LinkedList<Tuple> failedList = new LinkedList<Tuple>();
@@ -104,12 +94,9 @@ public class ConcurrentJoin extends ConcurrentOperator implements Runnable {
 						try {
 							Tuple t2ForJoin = itr.next();
 							Tuple joined = new Tuple(t1, t2ForJoin);
-//							System.out.println(tupleInfo.namesOfChildren.toString());
-//							System.out.println(joined.toString());
 							passedcount++;
 							outQ.put(joined);
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -118,12 +105,9 @@ public class ConcurrentJoin extends ConcurrentOperator implements Runnable {
 				for (Tuple t2 : matches) {
 					try {
 						Tuple joined = new Tuple(t1, t2);
-//						System.out.println(tupleInfo.namesOfChildren.toString());
-//						System.out.println(joined.toString());
 						passedcount++;
 						outQ.put(joined);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -137,7 +121,6 @@ public class ConcurrentJoin extends ConcurrentOperator implements Runnable {
 			try {
 				t2 = source2.take();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (t2 != null) {

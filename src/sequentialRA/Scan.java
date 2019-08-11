@@ -45,7 +45,6 @@ public class Scan extends Operator {
 		isDone 				= false;
 		numRows 			= catalog.getNumRows();
 		numTuplesInBuffer 	= BUFFER_CAPACITY / (numCols * 4);
-//		tupleInfo 			= new TupleInfo(numCols, catalog.relationName);
 	}
 	/**
 	 * method to check if there is a next tuple in the relation
@@ -56,7 +55,6 @@ public class Scan extends Operator {
 			try {
 				refillBuffer();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -65,14 +63,12 @@ public class Scan extends Operator {
 			try {
 				refillBuffer();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (bufferSize == -1) {
 				try {
 					ch.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				this.isDone = true;
@@ -92,7 +88,6 @@ public class Scan extends Operator {
 				try {
 					refillBuffer();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -131,7 +126,6 @@ public class Scan extends Operator {
 	}
 	@Override
 	public ArrayList<Operator> getChildren() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	public void setNext(Operator o) {

@@ -1,4 +1,4 @@
-//This class is a scanner for a col based file directory
+// This class is a scanner for a col based file directory
 package concurrentRA;
 
 import java.io.FileInputStream;
@@ -51,15 +51,11 @@ public class ConcurrentColScan extends ConcurrentOperator implements Runnable {
 	}
 	@Override
 	public void run() {
-		// int count = 0;
 		while (this.hasNext()) {
 			Tuple t = this.next();
 			try {
-//				count++;
-//				System.out.println(tableName + " " +count + " " +t.toString());
 				outQ.put(t);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -67,14 +63,12 @@ public class ConcurrentColScan extends ConcurrentOperator implements Runnable {
 			try {
 				outQ.put(new Tuple("poisonPill"));
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else {
 			try {
 				outQ.put(new Tuple("smallPill"));
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -119,14 +113,12 @@ public class ConcurrentColScan extends ConcurrentOperator implements Runnable {
 			try {
 				refillBuffers();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else if (!buffers[0].hasRemaining()) {
 			try {
 				refillBuffers();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (bufferSize == -1) {
@@ -134,7 +126,6 @@ public class ConcurrentColScan extends ConcurrentOperator implements Runnable {
 					for (FileChannel ch : inChannels) ch.close();
 					exit = true;
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				return false;
@@ -150,7 +141,6 @@ public class ConcurrentColScan extends ConcurrentOperator implements Runnable {
 				try {
 					refillBuffers();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

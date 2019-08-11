@@ -33,14 +33,11 @@ public class ConcurrentSum extends ConcurrentOperator implements Runnable {
 		inQ 						= source.getOutQ();
 		exit 						= false;
 		sumIndices 			= getSumIndices(sumPreds);
-//		System.out.println(Arrays.toString(sumIndices));
-//		System.out.println(tupleInfo.actualIndices.toString());
 	}
 
 	@Override
 	public void run() {
 		Tuple t;
-		// int count;
 		long[] runningSum = new long[sumIndices.length];
 		while (true) {
 			t = inQ.poll();
@@ -73,13 +70,11 @@ public class ConcurrentSum extends ConcurrentOperator implements Runnable {
 
 	@Override
 	public LinkedBlockingQueue<Tuple> getOutQ() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public ConcurrentColScan getScan() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

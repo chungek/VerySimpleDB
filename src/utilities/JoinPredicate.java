@@ -12,7 +12,7 @@ public class JoinPredicate {
 	 * 
 	 * @param info1
 	 * @param info2
-	 * @param predStr - input the predicate as "A.c3 = B.c12"
+	 * @param predStr - expect predicate as "A.c3 = B.c12"
 	 */
 	public JoinPredicate(TupleInfo info1, TupleInfo info2, String predStr) {
 		String[] splitPred = predStr.split(" = ");

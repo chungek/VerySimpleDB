@@ -8,16 +8,15 @@ import java.util.concurrent.atomic.AtomicLongArray;
 
 public class Pipeline {
 
-//	LinkedList<Thread> threads;
 	LinkedList<Thread> entryAndExit, rightChildScans, joinsAndRightFilts;
 	public AtomicLongArray sums;
 
 	public Pipeline(LinkedList<Thread> entryAndExit, LinkedList<Thread> joinsAndRightFilts,
-									LinkedList<Thread> rightChildScans, AtomicLongArray sums) {
-		this.entryAndExit = entryAndExit;
+					LinkedList<Thread> rightChildScans, AtomicLongArray sums) {
+		this.entryAndExit 		= entryAndExit;
 		this.joinsAndRightFilts = joinsAndRightFilts;
-		this.rightChildScans = rightChildScans;
-		this.sums	 = sums;
+		this.rightChildScans 	= rightChildScans;
+		this.sums	 			= sums;
 	}
 
 	public void execute() {

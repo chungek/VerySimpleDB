@@ -20,19 +20,19 @@ public class DB {
 		new File("dataConverted").mkdir();
 		Scanner console = new Scanner(System.in);
 		String[] csvPaths = console.nextLine().split(",");
-		//map to hold all catalogs
+		// map to hold all catalogs
 		ConcurrentHashMap<String, Catalog> catalogs = new ConcurrentHashMap<String, Catalog>();
 		// long loadstart = System.currentTimeMillis();
-		//compress all csv files concurrently and build map of catalogs
+		// compress all csv files concurrently and build map of catalogs
 		for (String file : csvPaths) {
 			Thread t = new Thread(new ConcurrentColLoader(file, catalogs));
 			t.start();
 		}
-		//wait for loads to complete
+		// wait for loads to complete
 		while (catalogs.size() != csvPaths.length);
 		for (Catalog c : catalogs.values()) System.out.println(c.toString());
 		// System.out.println("load took " + (System.currentTimeMillis() - loadstart));
-		//grab all queries
+		// grab all queries
 		QueryParser parser = new QueryParser(console);
 		parser.parse();
 		long start = System.currentTimeMillis();
@@ -40,7 +40,7 @@ public class DB {
 			Pipeline queryPipeline = Optimizer.buildPipeline(query, catalogs);
 			AtomicLongArray sums = queryPipeline.sums;
 			queryPipeline.execute();
-			//wait till pipeline complete
+			// wait till pipeline complete
 			while (sums.get(query.sumsNeeded.length) == 0L);
 			boolean receivedSums = false;
 			for (int j = 0; j < query.sumsNeeded.length; j ++) {

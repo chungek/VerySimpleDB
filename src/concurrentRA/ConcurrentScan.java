@@ -34,18 +34,18 @@ public class ConcurrentScan extends ConcurrentOperator implements ScanFunctions,
 	public boolean entryPoint;
 
 	public ConcurrentScan(Catalog catalog,  boolean entryPoint) throws IOException {
-		outQ 							= new LinkedBlockingQueue<Tuple>(SIZE);
-		tableName 				= catalog.relationName;
-		relationPath 			= catalog.getRelationPath();
-		numCols 					= catalog.getNumCols();
+		outQ 				= new LinkedBlockingQueue<Tuple>(SIZE);
+		tableName 			= catalog.relationName;
+		relationPath 		= catalog.getRelationPath();
+		numCols 			= catalog.getNumCols();
 		BUFFER_CAPACITY 	= 200 * 4 * 1024;
-		tupleSize 				= numCols * 4;
-		ch 								= new FileInputStream(relationPath).getChannel();
-		buffer 						= ByteBuffer.allocate(BUFFER_CAPACITY);
-		bufferSize 				= 0;
-		numRows 					= catalog.getNumRows();
+		tupleSize			= numCols * 4;
+		ch 					= new FileInputStream(relationPath).getChannel();
+		buffer 				= ByteBuffer.allocate(BUFFER_CAPACITY);
+		bufferSize 			= 0;
+		numRows 			= catalog.getNumRows();
 		numTuplesInBuffer	= BUFFER_CAPACITY / (numCols * 4);
-		tupleInfo 				= catalog.getTupleInfo();
+		tupleInfo 			= catalog.getTupleInfo();
 		this.entryPoint		= entryPoint;
 	}
 
@@ -53,26 +53,24 @@ public class ConcurrentScan extends ConcurrentOperator implements ScanFunctions,
 	public void run() {
 		while (!exit) {
 			int count = 0;
-			//scans entire table
+			// scans entire table
 			while (this.hasNext()) {
 				if (exit) break;
 				try {
 					outQ.put(this.next());
 					count++;
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 			if (exit) break;
-			//if the start of the pipeline is done, we can send in the poisonpill to shut everything down
+			// if the start of the pipeline is done, we can send in the poisonpill to shut everything down
 			if (entryPoint) {
 				try {
 					outQ.put(new Tuple("poisonPill"));
 					close();
 					break;
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else {
@@ -80,10 +78,8 @@ public class ConcurrentScan extends ConcurrentOperator implements ScanFunctions,
 					outQ.put(new Tuple("smallPill"));
 					reBuffer();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -105,7 +101,6 @@ public class ConcurrentScan extends ConcurrentOperator implements ScanFunctions,
 			try {
 				refillBuffer();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -114,14 +109,12 @@ public class ConcurrentScan extends ConcurrentOperator implements ScanFunctions,
 			try {
 				refillBuffer();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (bufferSize == -1) {
 				try {
 					ch.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				this.isDone = true;
@@ -140,7 +133,6 @@ public class ConcurrentScan extends ConcurrentOperator implements ScanFunctions,
 				try {
 					refillBuffer();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -164,7 +156,6 @@ public class ConcurrentScan extends ConcurrentOperator implements ScanFunctions,
 		try {
 			ch.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ch = new FileInputStream(relationPath).getChannel();

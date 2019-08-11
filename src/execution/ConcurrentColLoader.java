@@ -1,4 +1,4 @@
-//This class loads a csv file and creates a new directory as a dump for .dat files for each column
+// This class loads a csv file and creates a new directory as a dump for .dat files for each column
 package execution;
 
 import java.io.BufferedOutputStream;
@@ -41,14 +41,12 @@ public class ConcurrentColLoader implements Runnable {
 		FileChannel[] outChannels = null;
 		CharBuffer cb1 = CharBuffer.allocate(PAGE_SIZE);
 		CharBuffer cb2 = CharBuffer.allocate(PAGE_SIZE);
-		// allocate direct * 200 works well on L
 		ByteBuffer[] outBuffers = null;
 		boolean firstPass = true;
 		int colCount = 0;
 		int rowCount = 0;
 		int colCounter = 0;
 		ArrayList<Integer> firstTuple = new ArrayList<Integer>();
-		//write buffers to .dat file
 		int writes = 0;
 		boolean skip = false;
 		while (br.read(cb1) != -1) {
@@ -56,7 +54,7 @@ public class ConcurrentColLoader implements Runnable {
 			int lastNumStart = 0;
 			for (int i = 0; i < cb1.length(); i++) {
 				if (cb1.charAt(i) == ',' || cb1.charAt(i) == '\n') {
-					//count num of cols for catalog
+					// count num of cols for catalog
 					if (firstPass) {
 						if (cb1.charAt(i) == ',') {
 							colCount++;
@@ -65,7 +63,7 @@ public class ConcurrentColLoader implements Runnable {
 							firstPass = false;
 							outChannels = new FileChannel[colCount];
 							outBuffers = new ByteBuffer[colCount];
-							//init each output file
+							// init each output file
 							for (int j = 0; j < colCount; j++) {
 								String diskLocation = newdir + "/" + j;
 								FileOutputStream fos = new FileOutputStream(diskLocation);
@@ -91,7 +89,7 @@ public class ConcurrentColLoader implements Runnable {
 					}
 					String temp = cb1.subSequence(lastNumStart, i).toString();
 					int numRead = Integer.parseInt(temp, 10);
-					//count num of rows for catalog
+					// count num of rows for catalog
 					if (cb1.charAt(i) == '\n') {
 						rowCount++;
 					}
@@ -112,7 +110,7 @@ public class ConcurrentColLoader implements Runnable {
 					lastNumStart = i + 1;
 				}
 			}
-			//flip buffers
+			// flip buffers
 			cb2.clear();
 			cb2.append(cb1, lastNumStart, cb1.length());
 			CharBuffer tmp = cb2;

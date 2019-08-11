@@ -37,7 +37,7 @@ public class Utils {
 		actualIndex += offset;
 		return actualIndex;
 	}
-	//"A.c12"
+
 	public static int map(TupleInfo t, String colInfo) {
 		int actual = 0;
 		String targetRel = colInfo.substring(0, 1);
@@ -60,7 +60,6 @@ public class Utils {
 		
 	public static int computeBlockSize() {
 		int size = 0;
-		
 		return size;
 	}
 }

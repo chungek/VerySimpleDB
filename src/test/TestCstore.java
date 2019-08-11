@@ -34,13 +34,8 @@ public class TestCstore {
 		for (Catalog c : catalogs.values()) System.out.println(c.toString());
 		String[] colsA = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
 		ConcurrentColScan scanA = new ConcurrentColScan(catalogs.get("A"), true, colsA);
-//		String[] fpreds = {"A.c0 > 8000"};
-//		ConcurrentFilter filt = new ConcurrentFilter(fpreds, scanA);
-//		String[] colsB = {"0", "1", "2", "3"};
-//		ConcurrentColScan scanB = new ConcurrentColScan(catalogs.get("B"), false, colsB);
 		PrintOutQ printer = new PrintOutQ(scanA);
 		new Thread(scanA).start();
-//		new Thread(filt).start();
 		new Thread(printer).start();
 		
 	}

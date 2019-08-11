@@ -1,4 +1,4 @@
-// This is just a class to print out tuples for debugging
+// This is just a class to print out tuples for testing/debugging
 package concurrentRA;
 
 import java.io.IOException;
@@ -18,9 +18,9 @@ public class PrintOutQ extends ConcurrentOperator implements Runnable {
 
 	public PrintOutQ(ConcurrentOperator source) {
 		this.source = source;
-		inQ 				= source.getOutQ();
+		inQ 		= source.getOutQ();
 		tupleInfo 	= source.getTupleInfo();
-		exit 				= false;
+		exit 		= false;
 	}
 
 	@Override
@@ -36,7 +36,9 @@ public class PrintOutQ extends ConcurrentOperator implements Runnable {
 					exit = true;
 				} else {
 					count++;
-					if (count < 10 || (count > 300000 && count < 300010)) System.out.println(count + " " + t.toString());
+					if (count < 10 || (count > 300000 && count < 300010)) {
+						System.out.println(count + " " + t.toString());
+					}
 				}
 			}
 		}
